@@ -1,11 +1,14 @@
-FROM python:3.13 
-# Establecer el directorio de trabajo
+FROM python:3.11
+
 WORKDIR /app
-# Copiar requirements.txt e instalar dependencias
+
 COPY requirements.txt .
-RUN pip install --default-timeout=100 --no-cache-dir -r requirements.txt
-# Copiar el resto del código
+RUN pip install --upgrade pip setuptools wheel
+RUN pip install --upgrade pip && pip install --no-cache-dir -r requirements.txt
+
+
 COPY . .
+
 EXPOSE 5000
-CMD [ "python", "app.py" ]
-#CMD sh -c "gunicorn --bind 0.0.0.0:8081 --workers 4 --forwarded-allow-ips=*  wsgi:app"
+
+CMD ["gunicorn", "--bind", "0.0.0.0:5000", "app:app"]
